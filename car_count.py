@@ -5,7 +5,7 @@ import picamera
 from picamera.array import PiMotionAnalysis
 
 class GestureDetector(PiMotionAnalysis):
-    QUEUE_SIZE = 20 # the number of consecutive frames to analyze
+    QUEUE_SIZE = 12 # the number of consecutive frames to analyze
     THRESHOLD = 0.1 # the minimum average motion required in either axisglobal counter
 
     def __init__(self, camera):
@@ -44,7 +44,7 @@ class GestureDetector(PiMotionAnalysis):
                 counter+=1
                 
 
-with picamera.PiCamera(resolution='VGA', framerate=24) as camera:
+with picamera.PiCamera(resolution='VGA', framerate=30) as camera:
     with GestureDetector(camera) as detector:
         #Save the video
         camera.start_recording('video.h264', motion_output=detector)
@@ -68,8 +68,15 @@ with picamera.PiCamera(resolution='VGA', framerate=24) as camera:
             # Output this data to a text file
             f = open('data.txt', 'w')
             f.writelines(str(stack))
+            seq=["\n"]
+            f.writelines(seq)
             f.writelines(str(timer))
+            f.writelines(seq)
             f.close()
             print("Done")
+            print("There are %d cars observed") %sum(stack)
+
+
+
 
 
